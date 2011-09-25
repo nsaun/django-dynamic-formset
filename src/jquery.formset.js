@@ -82,11 +82,8 @@
                 var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
                     max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val())
 
-                console.log('checkaction', formCount, max_num, $$formsetContainer)
-
                 if (options.min_num > 0) {
                     if (formCount <= options.min_num) {
-                        console.log($$formsetContainer.find('.'+options.deleteCssClass))
                         $$formsetContainer.find('.'+options.deleteCssClass).hide()
                     } else {
                         $$formsetContainer.find('.'+options.deleteCssClass).show()
@@ -116,6 +113,7 @@
                 row.addClass(options.formCssClass);
                 applyExtraClasses(row, i);
             }
+            checkActionButtons()
         });
 
         if ($$.length) {
