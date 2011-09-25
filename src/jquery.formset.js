@@ -15,6 +15,7 @@
         var options = $.extend({}, $.fn.formset.defaults, opts),
             flatExtraClasses = options.extraClasses.join(' '),
             $$ = $(this),
+            $$formsetContainer = $$.parent(),
 
             applyExtraClasses = function(row, ndx) {
                 if (options.extraClasses) {
@@ -71,10 +72,33 @@
                             });
                         }
                     }
+                    checkActionButtons();
                     // If a post-delete callback was provided, call it with the deleted form:
                     if (options.removed) options.removed(row);
                     return false;
                 });
+            },
+            checkActionButtons = function() {
+                var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
+                    max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val())
+
+                console.log('checkaction', formCount, max_num, $$formsetContainer)
+
+                if (options.min_num > 0) {
+                    if (formCount <= options.min_num) {
+                        console.log($$formsetContainer.find('.'+options.deleteCssClass))
+                        $$formsetContainer.find('.'+options.deleteCssClass).hide()
+                    } else {
+                        $$formsetContainer.find('.'+options.deleteCssClass).show()
+                    }
+                }
+                if (max_num > 0) {
+                    if (formCount >= max_num) {
+                        $$formsetContainer.find('.'+options.addCssClass).hide()
+                    } else {
+                        $$formsetContainer.find('.'+options.addCssClass).show()
+                    }
+                }
             };
 
         $$.each(function(i) {
@@ -142,10 +166,17 @@
                 applyExtraClasses(row, formCount);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
-                    updateElementIndex($(this), options.prefix, formCount);
+                    var elem = $(this);
+                    updateElementIndex(elem, options.prefix, formCount);
+                    if (elem.is('input:checkbox') || elem.is('input:radio')) {
+                        elem.attr('checked', false);
+                    } else {
+                        elem.val('');
+                    }
                 });
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
                 // If a post-add callback was supplied, call it with the added form:
+                checkActionButtons();
                 if (options.added) options.added(row);
                 return false;
             });
@@ -157,6 +188,7 @@
     /* Setup plugin defaults */
     $.fn.formset.defaults = {
         prefix: 'form',                  // The form prefix for your django formset
+        min_num: 0,                      // Minimum count rows
         formTemplate: null,              // The jQuery selection cloned to generate new form instances
         addText: 'add another',          // Text for the add link
         deleteText: 'remove',            // Text for the delete link
