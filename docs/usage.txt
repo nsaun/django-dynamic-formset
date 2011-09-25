@@ -77,6 +77,9 @@ formsets using any of the provided methods: both regular formsets
 Working with Inline Formsets
 ============================
 
+..versionchanged:: 1.2.1
+Forked to github with some bugfixes
+
 ..versionchanged:: 1.2
 
 In version 1.2, the behaviour of inline formsets was changed: clicking the
