@@ -79,14 +79,16 @@
                 });
             },
             checkActionButtons = function() {
-                var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
-                    max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val())
+                var //formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
+                    max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val()),
+                    formCount = $$formsetContainer.find('.'+options.formCssClass).length
 
+                console.log(formCount)
                 if (options.min_num > 0) {
                     if (formCount <= options.min_num) {
                         $$formsetContainer.find('.'+options.deleteCssClass).hide()
                     } else {
-                        $$formsetContainer.find('.'+options.deleteCssClass).show()
+                        $$formsetContainer.find('.'+options.deleteCssClass+':gt(0)').show()
                     }
                 }
                 if (max_num > 0) {
