@@ -80,15 +80,13 @@
             },
             checkActionButtons = function() {
                 var max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val()),
-                    formCount = $$formsetContainer.find('.'+options.formCssClass).length,
-                    min_selectors = ''
+                    formCount = $$formsetContainer.find('.'+options.formCssClass).length
 
                 if (options.min_num > 0) {
                     if (formCount <= options.min_num) {
                         $$formsetContainer.find('.'+options.deleteCssClass).hide()
                     } else {
-                        min_selectors = ':gt('+(options.min_num-1)+')'
-                        $$formsetContainer.find('.'+options.deleteCssClass+':gt(0)').show()
+                        $$formsetContainer.find('.'+options.deleteCssClass+':gt('+(options.min_num-1)+')').show()
                     }
                 }
                 if (max_num > 0) {
