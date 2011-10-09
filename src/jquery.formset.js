@@ -25,7 +25,7 @@
             },
 
             updateElementIndex = function(elem, prefix, ndx) {
-                var idRegex = new RegExp('(' + prefix + '-\\d+-)|(^)'),
+                var idRegex = new RegExp('(' + prefix + '-\\d+-)'),
                     replacement = prefix + '-' + ndx + '-';
                 if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, replacement));
                 if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
@@ -53,6 +53,7 @@
                 row.find('a.' + options.deleteCssClass).click(function() {
                     var row = $(this).parents('.' + options.formCssClass),
                         del = row.find('input:hidden[id $= "-DELETE"]');
+                    if (options.beforeremove) options.beforeremove(row)
                     if (del.length) {
                         // We're dealing with an inline formset; rather than remove
                         // this form from the DOM, we'll mark it as deleted and hide
@@ -79,14 +80,14 @@
                 });
             },
             checkActionButtons = function() {
-                var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
-                    max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val())
+                var max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val()),
+                    formCount = $$formsetContainer.find('.'+options.formCssClass).length
 
                 if (options.min_num > 0) {
                     if (formCount <= options.min_num) {
                         $$formsetContainer.find('.'+options.deleteCssClass).hide()
                     } else {
-                        $$formsetContainer.find('.'+options.deleteCssClass).show()
+                        $$formsetContainer.find('.'+options.deleteCssClass+':gt('+(options.min_num-1)+')').show()
                     }
                 }
                 if (max_num > 0) {
@@ -162,6 +163,7 @@
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
                 applyExtraClasses(row, formCount);
+                if (options.beforeadd) options.beforeadd(row);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
                     var elem = $(this);
@@ -194,7 +196,9 @@
         deleteCssClass: 'delete-row',    // CSS class applied to the delete link
         formCssClass: 'dynamic-form',    // CSS class applied to each form in a formset
         extraClasses: [],                // Additional CSS classes, which will be applied to each form in turn
+        beforeadd:null,                  // Function called each time before a new form is added
         added: null,                     // Function called each time a new form is added
+        beforeremove: null,              // Function called each time before a new form is added
         removed: null                    // Function called each time a form is deleted
     };
 })(jQuery)
