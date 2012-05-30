@@ -25,11 +25,13 @@
             },
 
             updateElementIndex = function(elem, prefix, ndx) {
-                var idRegex = new RegExp('(' + prefix + '-\\d+-)'),
-                    replacement = prefix + '-' + ndx + '-';
-                if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, replacement));
-                if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
-                if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(idRegex, replacement));
+                var idRegex = new RegExp('(^id_' + prefix + '-\\d+-)|(^)'),
+                    idReplacement = 'id_' + prefix + '-' + ndx + '-';
+                var nameRegex = new RegExp('(^' + prefix + '-\\d+-)|(^)'),
+                    nameReplacement = prefix + '-' + ndx + '-';
+                if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, idReplacement));
+                if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, idReplacement));
+                if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(nameRegex, nameReplacement));
             },
 
             hasChildElements = function(row) {
